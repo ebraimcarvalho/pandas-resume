@@ -138,7 +138,95 @@ This is particularly confusing when the DataFrame index is a simple numerical li
 
 Otherwise, the semantics of using loc are the same as those for iloc.
 
+#### Manipulating the index
+Label-based selection derives its power from the labels in the index. Critically, the index we use is not immutable. We can manipulate the index in any way we see fit.
 
+The set_index() method can be used to do the job. Here is what happens when we set_index to the title field:
+
+``` python
+reviews.set_index("title")
+```
+
+Conditional selection
+So far we've been indexing various strides of data, using structural properties of the DataFrame itself. To do interesting things with the data, however, we often need to ask questions based on conditions.
+
+For example, suppose that we're interested specifically in better-than-average wines produced in Italy.
+
+We can start by checking if each wine is Italian or not:
+
+``` python
+reviews.country == 'Italy' # show all records with true or false if country == Italy
+#0          True
+#1         False
+#          ...  
+#129969    False
+#129970    False
+Name: country, Length: 129971, dtype: bool
+```
+
+This operation produced a Series of True/False booleans based on the country of each record. This result can then be used inside of loc to select the relevant data:
+
+``` python
+reviews.loc[reviews.country == 'Italy'] # get all rows with country == Italy
+```
+
+This DataFrame has ~20,000 rows. The original had ~130,000. That means that around 15% of wines originate from Italy.
+
+We also wanted to know which ones are better than average. Wines are reviewed on a 80-to-100 point scale, so this could mean wines that accrued at least 90 points.
+
+We can use the ampersand (&) to bring the two questions together:
+
+``` python
+reviews.loc[(reviews.country == 'Italy') & (reviews.points >= 90)]
+# get all rows with country == Italy and points >= 90
+```
+
+Suppose we'll buy any wine that's made in Italy or which is rated above average. For this we use a pipe (|):
+
+``` python
+reviews.loc[(reviews.country == 'Italy') | (reviews.points >= 90)]
+# get all rows with contry == Italy OR points >= 90
+```
+
+Pandas comes with a few built-in conditional selectors, two of which we will highlight here.
+
+The first is isin. isin is lets you select data whose value "is in" a list of values. For example, here's how we can use it to select wines only from Italy or France:
+
+``` python
+reviews.loc[reviews.country.isin(['Italy', 'France'])]
+# Get all rows with conutry == Italy Or France
+```
+
+The second is isnull (and its companion notnull). These methods let you highlight values which are (or are not) empty (NaN). For example, to filter out wines lacking a price tag in the dataset, here's what we would do:
+``` python
+reviews.loc[reviews.price.notnull()]
+# Get all rows with Price not Null
+```
+
+#### Assigning data
+Going the other way, assigning data to a DataFrame is easy. You can assign either a constant value:
+
+``` python
+reviews['critic'] = 'everyone'
+reviews['critic']
+#0         everyone
+#1         everyone
+#            ...   
+#129969    everyone
+#129970    everyone
+#Name: critic, Length: 129971, dtype: object
+
+#Or with an iterable of values:
+
+reviews['index_backwards'] = range(len(reviews), 0, -1)
+reviews['index_backwards']
+#0         129971
+#1         129970
+#           ...  
+#129969         2
+#129970         1
+#Name: index_backwards, Length: 129971, dtype: int64
+```
 
 ``` python
 df = pd.DataFrame({'Yes': [50, 21], 'No not': [131, 2]})
