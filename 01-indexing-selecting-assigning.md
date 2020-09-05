@@ -7,7 +7,7 @@ In Python, we can access the property of an object by accessing it as an attribu
 Hence to access the country property of reviews we can use:
 
 ``` python
-reviews.country
+reviews.country # get all rows of the column name country
 #0            Italy
 #1         Portugal
 #            ...   
@@ -20,7 +20,7 @@ reviews.country
 If we have a Python dictionary, we can access its values using the indexing ([]) operator. We can do the same with columns in a DataFrame:
 
 ``` python
-reviews['country']
+reviews['country'] # get all rows of the column name country
 #0            Italy
 #1         Portugal
 #            ...   
@@ -34,6 +34,108 @@ But if we had a country providence column, reviews.country providence wouldn't w
 Doesn't a pandas Series look kind of like a fancy dictionary? It pretty much is, so it's no surprise that, to drill down to a single specific value, we need only use the indexing operator [] once more:
 
 ``` python
-reviews['country'][0]
-'Italy'
+reviews['country'][0] # get the row index 0 of column name country
+#'Italy'
+```
+
+Pandas has its own accessor operators, loc and iloc. For more advanced operations, these are the ones you're supposed to be using.
+
+#### Index-based selection
+Pandas indexing works in one of two paradigms. The first is index-based selection: selecting data based on its numerical position in the data. iloc follows this paradigm.
+
+To select the first row of data in a DataFrame, we may use the following:
+``` python
+reviews.iloc[0] # get all row index 0
+#country                                                    Italy
+#description    Aromas include tropical fruit, broom, brimston...
+#                                     ...                        
+#variety                                              White Blend
+#winery                                                   Nicosia
+#Name: 0, Length: 13, dtype: object
+```
+
+Both 'loc' and 'iloc' are row-first, column-second. This is the opposite of what we do in native Python, which is column-first, row-second.
+
+This means that it's marginally easier to retrieve rows, and marginally harder to get retrieve columns. To get a column with iloc, we can do the following:
+
+``` python
+reviews.iloc[:, 0] # get the column index 0 of all rows
+#0            Italy
+#1         Portugal
+#            ...   
+#129969      France
+#129970      France
+#Name: country, Length: 129971, dtype: object
+```
+
+On its own, the : operator, which also comes from native Python, means "everything". When combined with other selectors, however, it can be used to indicate a range of values. For example, to select the country column from just the first, second, and third row, we would do:
+
+``` python
+reviews.iloc[:3, 0] # get the rows 0, 1 and 2, give me the column 0
+#0       Italy
+#1    Portugal
+#2          US
+#Name: country, dtype: object
+```
+
+Or, to select just the second and third entries, we would do:
+
+``` python
+reviews.iloc[1:3, 0] # get the rows 1 and 2, give me the column 0
+#1    Portugal
+#2          US
+#Name: country, dtype: object
+```
+
+It's also possible to pass a list:
+
+``` python
+reviews.iloc[[0, 1, 2], 0] # get the rows 0, 1 and 2, give me the column 0
+#0       Italy
+#1    Portugal
+#2          US
+#Name: country, dtype: object
+```
+
+Finally, it's worth knowing that negative numbers can be used in selection. This will start counting forwards from the end of the values. So for example here are the last five elements of the dataset.
+
+``` python
+reviews.iloc[-5:] # get the last 5 rows, give me all columns
+```
+
+#### Label-based selection
+The second paradigm for attribute selection is the one followed by the loc operator: label-based selection. In this paradigm, it's the data index value, not its position, which matters.
+
+For example, to get the first entry in reviews, we would now do the following:
+
+``` python
+reviews.loc[0, 'country'] # get the row index 0, column label country
+#'Italy'
+```
+
+iloc is conceptually simpler than loc because it ignores the dataset's indices. When we use iloc we treat the dataset like a big matrix (a list of lists), one that we have to index into by position. loc, by contrast, uses the information in the indices to do its work. Since your dataset usually has meaningful indices, it's usually easier to do things using loc instead. For example, here's one operation that's much easier using loc:
+
+``` python
+reviews.loc[:, ['taster_name', 'taster_twitter_handle', 'points']] # get all rows, give just 
+# the columns label taster_name, taster_twitter_handle and points
+
+#   taster_name	    taster_twitter_handle	points
+#0	Kerin O’Keefe	  @kerinokeefe	        87
+#1	Roger Voss	    @vossroger	          87
+#.. ...	            ...	                  ...
+#129969	Roger Voss	@vossroger	          90
+#129970	Roger Voss	@vossroger	          90
+```
+
+
+
+
+``` python
+df = pd.DataFrame({'Yes': [50, 21], 'No not': [131, 2]})
+print(df['Yes'][1]) #column and row
+# 21
+print(df.iloc[1,0]) # row and column by index
+# 21
+print(df.loc[1, 'Yes']) # row and column by label (name column)
+# 21
 ```
