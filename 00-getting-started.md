@@ -9,7 +9,7 @@ import pandas as pd
 # To create the first Dataframe with intengers
 pd.DataFrame({'Yes': [50, 21], 'No': [131, 2]})
 
-#    Yes	No
+#    Yes  No
 # 0  50	  131
 # 1  21	  2
 
