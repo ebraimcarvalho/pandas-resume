@@ -11,22 +11,22 @@ pd.DataFrame({'Yes': [50, 21], 'No': [131, 2]})
 
 #    Yes	No
 # 0  50	  131
-# 1	 21	  2
+# 1  21	  2
 
 # We also can create a dataframe with strings
 pd.DataFrame({'Bob': ['I liked it.', 'It was awful.'], 
 							'Sue': ['Pretty good.', 'Bland.']})
 #   Bob	          Sue
-#0	I liked it.	  Pretty good.
-#1	It was awful.	Bland.
+#0 I liked it.	  Pretty good.
+#1 It was awful.  Bland.
 
 # We can set a name to our index row
 pd.DataFrame({'Bob': ['I liked it.', 'It was awful.'], 
               'Sue': ['Pretty good.', 'Bland.']},
              index=['Product A', 'Product B'])
 #           Bob	          Sue
-#Product A	I liked it.	  Pretty good.
-#Product B	It was awful.	Bland.
+#Product A  I liked it.	  Pretty good.
+#Product B  It was awful. Bland.
 
 # Starting with Series
 pd.Series([1, 2, 3, 4, 5])
