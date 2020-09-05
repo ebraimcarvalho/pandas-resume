@@ -236,4 +236,63 @@ print(df.iloc[1,0]) # row and column by index
 # 21
 print(df.loc[1, 'Yes']) # row and column by label (name column)
 # 21
+
+first_description = reviews.description.iloc[0]
+first_description = reviews.iloc[0, 1]
+#Note that while this is the preferred way to obtain the entry in the DataFrame, many other options will return a valid result, such as 
+reviews.description.loc[0]
+reviews.description[0] # and more!
 ```
+
+###### Select the first 10 values from the description column in reviews, assigning the result to variable first_descriptions.
+
+Hint: format your output as a pandas Series.
+
+first_descriptions = reviews.description[:10]
+first_descriptions = reviews.description[:10]
+first_descriptions = reviews.description.iloc[:10]
+Note that many other options will return a valid result, such as desc.head(10) and reviews.loc[:9, "description"].
+
+###### Select the records with index labels 1, 2, 3, 5, and 8, assigning the result to the variable sample_reviews.
+sample_reviews = reviews.iloc[[1,2,3,5,8]]
+indices = [1, 2, 3, 5, 8]
+sample_reviews = reviews.loc[indices]
+
+###### Create a variable df containing the country, province, region_1, and region_2 columns of the records with the index labels 0, 1, 10, and 100. In other words, generate the following DataFrame:
+
+
+df = reviews.loc[[0,1,10,100], ['country', 'province', 'region_1', 'region_2']]
+cols = ['country', 'province', 'region_1', 'region_2']
+indices = [0, 1, 10, 100]
+df = reviews.loc[indices, cols]
+
+###### Create a variable df containing the country and variety columns of the first 100 records.
+
+Hint: you may use loc or iloc. When working on the answer this question and the several of the ones that follow, keep the following "gotcha" described in the tutorial:
+
+iloc uses the Python stdlib indexing scheme, where the first element of the range is included and the last one excluded. loc, meanwhile, indexes inclusively.
+
+This is particularly confusing when the DataFrame index is a simple numerical list, e.g. 0,...,1000. In this case df.iloc[0:1000] will return 1000 entries, while df.loc[0:1000] return 1001 of them! To get 1000 elements using loc, you will need to go one lower and ask for df.iloc[0:999].
+
+df = reviews.loc[0:99, ['country', 'variety']]
+cols = ['country', 'variety']
+df = reviews.loc[:99, cols]
+or
+
+cols_idx = [0, 11]
+df = reviews.iloc[:100, cols_idx]
+
+
+###### Create a DataFrame italian_wines containing reviews of wines made in Italy. Hint: reviews.country equals what?
+
+italian_wines = reviews[reviews['country'] == 'Italy']
+italian_wines = reviews[reviews.country == 'Italy']
+
+###### Create a DataFrame top_oceania_wines containing all reviews with at least 95 points (out of 100) for wines from Australia or New Zealand.
+
+top_oceania_wines = reviews[(reviews['points'] >= 95) & (reviews.country.isin(['Australia', 'New Zealand']))]
+
+top_oceania_wines = reviews.loc[
+  (reviews.country.isin(['Australia', 'New Zealand']))
+  & (reviews.points >= 95)
+]
