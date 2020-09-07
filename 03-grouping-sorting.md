@@ -54,3 +54,15 @@ For even more fine-grained control, you can also group by more than one column. 
 reviews.groupby(['country', 'province']).apply(lambda df: df.loc[df.points.idxmax()])
 ```
 
+Another groupby() method worth mentioning is agg(), which lets you run a bunch of different functions on your DataFrame simultaneously. For example, we can generate a simple statistical summary of the dataset as follows:
+
+``` python
+reviews.groupby(['country']).price.agg([len, min, max])
+#           len	    min	 max
+#country			
+#Argentina	3800.0	4.0	 230.0
+#Armenia	  2.0	    14.0 15.0
+#...	...	...	...
+#Ukraine	  14.0	  6.0	 13.0
+#Uruguay	  109.0	  10.0 130.0
+```
