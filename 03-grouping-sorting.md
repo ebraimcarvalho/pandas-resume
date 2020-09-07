@@ -66,3 +66,94 @@ reviews.groupby(['country']).price.agg([len, min, max])
 #Ukraine	  14.0	  6.0	 13.0
 #Uruguay	  109.0	  10.0 130.0
 ```
+
+##### Multi-indexes
+
+In all of the examples we've seen thus far we've been working with DataFrame or Series objects with a single-label index. groupby() is slightly different in the fact that, depending on the operation we run, it will sometimes result in what is called a multi-index.
+
+A multi-index differs from a regular index in that it has multiple levels. For example:
+
+``` python
+countries_reviewed = reviews.groupby(['country', 'province']).description.agg([len])
+countries_reviewed
+#		                          len
+#country	province	
+#Argentina	Mendoza Province	3264
+#Other	                      536
+#...	...	...
+#Uruguay	San Jose	          3
+#Uruguay	                    24
+
+mi = countries_reviewed.index
+type(mi)
+#pandas.core.indexes.multi.MultiIndex
+```
+
+Multi-indices have several methods for dealing with their tiered structure which are absent for single-level indices. They also require two levels of labels to retrieve a value. Dealing with multi-index output is a common "gotcha" for users new to pandas.
+
+The use cases for a multi-index are detailed alongside instructions on using them in the MultiIndex / Advanced Selection section of the pandas documentation.
+
+However, in general the multi-index method you will use most often is the one for converting back to a regular index, the reset_index() method:
+
+``` python
+countries_reviewed.reset_index()
+#   country	  province	        len
+#0	Argentina	Mendoza Province	3264
+#1	Argentina	Other             536
+#...	...	...	...
+#423	Uruguay	San Jose	        3
+#424	Uruguay	Uruguay	          24
+```
+
+#### Sorting
+
+Looking again at countries_reviewed we can see that grouping returns data in index order, not in value order. That is to say, when outputting the result of a groupby, the order of the rows is dependent on the values in the index, not in the data.
+
+To get data in the order want it in we can sort it ourselves. The sort_values() method is handy for this.
+
+``` python
+countries_reviewed = countries_reviewed.reset_index()
+countries_reviewed.sort_values(by='len')
+#     country	province	            len
+#179	Greece	Muscat of Kefallonian	1
+#192	Greece	Sterea Ellada	        1
+#...	...	...	...
+#415	US	    Washington	          8639
+#392	US	    California	          36247
+```
+
+sort_values() defaults to an ascending sort, where the lowest values go first. However, most of the time we want a descending sort, where the higher numbers go first. That goes thusly:
+
+``` python
+countries_reviewed.sort_values(by='len', ascending=False)
+#     country	province	  len
+#392	US	    California	36247
+#415	US	    Washington	8639
+#...	...	...	...
+#63	  Chile	  Coelemu	    1
+#149	Greece	Beotia	    1
+```
+
+To sort by index values, use the companion method sort_index(). This method has the same arguments and default order:
+
+``` python
+countries_reviewed.sort_index()
+#     country	  province	        len
+#0	  Argentina	Mendoza Province	3264
+#1	  Argentina	Other	            536
+#...	...	...	...
+#423	Uruguay	  San Jose	        3
+#424	Uruguay	  Uruguay	          24
+```
+
+Finally, know that you can sort by more than one column at a time:
+
+``` python
+countries_reviewed.sort_values(by=['country', 'len'])
+#     country	  province	        len
+#1	  Argentina	Other	            536
+#0	  Argentina	Mendoza Province	3264
+#...	...	...	...
+#424	Uruguay	  Uruguay	          24
+#419	Uruguay	  Canelones	        43
+```
