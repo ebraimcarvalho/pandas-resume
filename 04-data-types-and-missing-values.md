@@ -96,3 +96,19 @@ n_missing_prices = len(missing_price_reviews)
 # or
 n_missing_prices = pd.isnull(reviews.price).sum()
 ```
+
+4. What are the most common wine-producing regions? Create a Series counting the number of times each value occurs in the region_1 field. This field is often missing data, so replace missing values with Unknown. Sort in descending order. Your output should look something like this:
+
+``` python
+#Unknown                    21247
+#Napa Valley                 4480
+#                           ...  
+#Bardolino Superiore            1
+#Primitivo del Tarantino        1
+#Name: region_1, Length: 1230, dtype: int64
+```
+
+``` python
+reviews_per_region = reviews.region_1.fillna('Unknown').value_counts()
+reviews_per_region = reviews.region_1.fillna('Unknown').value_counts().sort_values(ascending=False)
+```
