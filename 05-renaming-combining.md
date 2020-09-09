@@ -55,3 +55,37 @@ renamed = reviews.rename(columns={'region_1': 'region', 'region_2': 'locale'})
 # or
 renamed = reviews.rename(columns=dict(region_1='region', region_2='locale'))
 ```
+
+2. Set the index name in the dataset to wines.
+
+``` python
+reindexed = reviews.rename_axis("wines", axis='rows')
+```
+
+3. The Things on Reddit dataset includes product links from a selection of top-ranked forums ("subreddits") on reddit.com. Run the cell below to load a dataframe of products mentioned on the /r/gaming subreddit and another dataframe for products mentioned on the r//movies subreddit.
+
+``` python
+gaming_products = pd.read_csv("../input/things-on-reddit/top-things/top-things/reddits/g/gaming.csv")
+gaming_products['subreddit'] = "r/gaming"
+movie_products = pd.read_csv("../input/things-on-reddit/top-things/top-things/reddits/m/movies.csv")
+movie_products['subreddit'] = "r/movies"
+```
+
+Create a DataFrame of products mentioned on either subreddit.
+
+``` python
+combined_products = pd.concat([gaming_products, movie_products])
+```
+
+4. The Powerlifting Database dataset on Kaggle includes one CSV table for powerlifting meets and a separate one for powerlifting competitors. Run the cell below to load these datasets into dataframes:
+
+``` python
+powerlifting_meets = pd.read_csv("../input/powerlifting-database/meets.csv")
+powerlifting_competitors = pd.read_csv("../input/powerlifting-database/openpowerlifting.csv")
+```
+
+Both tables include references to a MeetID, a unique key for each meet (competition) included in the database. Using this, generate a dataset combining the two tables into one.
+
+``` python
+powerlifting_combined = powerlifting_meets.set_index('MeetID').join(powerlifting_competitors.set_index('MeetID'))
+```
