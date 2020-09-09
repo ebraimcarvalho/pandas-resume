@@ -161,7 +161,7 @@ reviews.country == 'Italy' # show all records with true or false if country == I
 #          ...  
 #129969    False
 #129970    False
-Name: country, Length: 129971, dtype: bool
+#Name: country, Length: 129971, dtype: bool
 ```
 
 This operation produced a Series of True/False booleans based on the country of each record. This result can then be used inside of loc to select the relevant data:
